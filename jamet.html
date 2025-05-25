@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Countdown...</title>
+    <style>
+        /* --- Initial Body and Countdown Styles (Horror Theme) --- */
+        body {
+            background-color: #000; /* Initial black background */
+            color: #ff4d4d;       /* Initial sinister red text color for countdown */
+            font-family: 'Courier New', Courier, monospace; /* Horror theme font */
+            font-size: 6em;       /* Large font for countdown */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            overflow: hidden; /* Hide overflow during countdown */
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, font-family 0.3s ease-in-out;
+        }
+
+        #countdown {
+            opacity: 1;
+            text-shadow:
+                2px 2px 8px #000,
+                0 0 10px #ff0000,
+                0 0 15px #ff0000,
+                0 0 20px #ff0000;
+            font-weight: bold;
+            animation: horrorFlicker 1.2s infinite steps(1, end), pulse 1s infinite alternate;
+            position: relative; /* To ensure it's above the initially hidden birthday message */
+            z-index: 10;
+        }
+
+        @keyframes horrorFlicker {
+            0%, 100% { opacity: 1; transform: skewX(0deg) scale(1); }
+            5% { opacity: 0.7; transform: skewX(-3deg) scale(1.02); }
+            10% { opacity: 1; transform: skewX(3deg) scale(0.98); }
+            15% { opacity: 0.6; }
+            20% { opacity: 1; }
+            30% { text-shadow: 2px 2px 8px #000, 0 0 12px #ff4d4d, 0 0 18px #ff4d4d, 0 0 25px #ff4d4d; }
+            50% { opacity: 0.5; color: #ffaaaa; transform: scale(1.05); }
+            51% { opacity: 1; color: #ff4d4d; transform: scale(1); }
+            75% { transform: skewX(2deg); }
+            80% { transform: skewX(-2deg); }
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.03); }
+        }
+
+        /* --- Birthday Message Container (Initially Hidden) --- */
+        #birthday-message-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex; /* Will be used to center the card */
+            justify-content: center;
+            align-items: center;
+            opacity: 0; /* Initially hidden */
+            /* Background will be handled by body's change, text color set here */
+            color: #333; /* Default text color for birthday message */
+            font-family: 'Arial', sans-serif; /* Default font for birthday message */
+            z-index: 1; /* Lower than countdown initially */
+            /* overflow: hidden; /* If card/confetti needs to be contained */
+        }
+
+        /* --- Styles for Birthday Card and Content (from your provided code) --- */
+        .birthday-card {
+            background-color: #fff;
+            padding: 40px 60px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            animation: popIn 0.8s ease-out 0.2s forwards; /* Delay popIn slightly after container appears */
+            opacity: 0; /* Start transparent for popIn animation */
+            text-align: center; /* Ensure text inside card is centered */
+            font-size: 1rem; /* Reset font size for card content, children will define their own */
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .birthday-card h1 { /* Target h1 specifically within .birthday-card */
+            color: #ff69b4; /* Hot Pink */
+            font-size: 3em;
+            margin-bottom: 10px;
+            animation: colorChange 5s infinite alternate;
+        }
+
+        @keyframes colorChange {
+            0% { color: #ff69b4; } /* Hot Pink */
+            25% { color: #1e90ff; } /* Dodger Blue */
+            50% { color: #32cd32; } /* Lime Green */
+            75% { color: #ff8c00; } /* Dark Orange */
+            100% { color: #9370db; } /* Medium Purple */
+        }
+
+        .birthday-card p { /* Target p specifically within .birthday-card */
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .birthday-card .emoji { /* Target .emoji specifically within .birthday-card */
+            font-size: 3em;
+            margin-top: 20px;
+        }
+
+        /* --- Static Confetti Styles (from your provided code) --- */
+        .confetti { /* These are children of birthday-message-container but position:fixed */
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            /* background-color: red; /* Default, overridden by specific classes */
+            opacity: 0.7;
+            animation: fall 5s linear infinite;
+            /* Will be hidden initially because parent #birthday-message-container is opacity 0 */
+        }
+
+        .confetti.c1 { top: -20px; left: 10%; background-color: #ff69b4; animation-delay: 0s; }
+        .confetti.c2 { top: -20px; left: 20%; background-color: #1e90ff; animation-delay: -1s; }
+        .confetti.c3 { top: -20px; left: 30%; background-color: #32cd32; animation-delay: -0.5s; }
+        .confetti.c4 { top: -20px; left: 40%; background-color: #ff8c00; animation-delay: -1.5s; }
+        .confetti.c5 { top: -20px; left: 50%; background-color: #9370db; animation-delay: -2s; }
+        .confetti.c6 { top: -20px; left: 60%; background-color: #ff69b4; animation-delay: -2.5s; }
+        .confetti.c7 { top: -20px; left: 70%; background-color: #1e90ff; animation-delay: -3s; }
+        .confetti.c8 { top: -20px; left: 80%; background-color: #32cd32; animation-delay: -3.5s; }
+        .confetti.c9 { top: -20px; left: 90%; background-color: #ff8c00; animation-delay: -4s; }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotateZ(0deg);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(100vh) rotateZ(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="countdown">5</div> <div id="birthday-message-container">
+        <div class="confetti c1"></div>
+        <div class="confetti c2"></div>
+        <div class="confetti c3"></div>
+        <div class="confetti c4"></div>
+        <div class="confetti c5"></div>
+        <div class="confetti c6"></div>
+        <div class="confetti c7"></div>
+        <div class="confetti c8"></div>
+        <div class="confetti c9"></div>
+
+        <div class="birthday-card">
+            <h1>Happy Birthday, JAMET!!!</h1>
+            <p>aku ndak bisa wishing, kringe. <br>tapi intinya semoga sehat, panjang umur, jarang emosi. anjay aowkaowkaowkao</p>
+            <p>aowkaok apa lagi? semoga makin pinter, ndak writers block terus.</p>
+            <p>semoga semakin jamet seperti Kim Jamet</p>
+            <div class="emoji">🎉🎂🥳🎈</div>
+        </div>
+    </div>
+
+    <script>
+        const countdownElement = document.getElementById('countdown');
+        const birthdayContainer = document.getElementById('birthday-message-container');
+        const bodyElement = document.body;
+        let currentCountdownValue = 5; // Set the starting number for the countdown
+
+        function displayCurrentCount() {
+            if (countdownElement) {
+                countdownElement.textContent = currentCountdownValue;
+            }
+        }
+
+        function triggerSurprise() {
+            // 1. Immediately hide countdown text
+            if (countdownElement) {
+                countdownElement.style.transition = 'none'; // No transition for abrupt disappearance
+                countdownElement.style.opacity = '0';
+                countdownElement.style.display = 'none'; // Remove from layout
+            }
+
+            // 2. Change body styles for the birthday theme
+            if (bodyElement) {
+                bodyElement.style.backgroundColor = '#f0f8ff'; // Light Alice Blue
+                bodyElement.style.color = '#333';              // Default text color from your theme
+                bodyElement.style.fontFamily = "'Arial', sans-serif"; // Birthday theme font
+                // Remove flex properties from body as #birthday-message-container will handle centering
+                bodyElement.style.display = 'block'; // Or 'initial' to reset
+                bodyElement.style.justifyContent = 'initial';
+                bodyElement.style.alignItems = 'initial';
+                bodyElement.style.fontSize = 'initial'; // Reset body font size
+            }
+
+            // 3. Show birthday message container
+            if (birthdayContainer) {
+                birthdayContainer.style.opacity = '1';
+                birthdayContainer.style.zIndex = '20'; // Ensure it's on top now
+                // The .birthday-card inside will play its popIn animation via CSS
+                // The static confetti inside will become visible and animate via CSS
+            }
+        }
+
+        let countdownInterval;
+
+        function countdownStep() {
+            if (currentCountdownValue === 1) {
+                displayCurrentCount(); // Show '1'
+                if (countdownInterval) clearInterval(countdownInterval);
+                // Let '1' display with horror effects for this duration before surprise
+                setTimeout(triggerSurprise, 1200); // (1.2 seconds)
+            } else if (currentCountdownValue < 1) {
+                if (countdownInterval) clearInterval(countdownInterval);
+                triggerSurprise(); // Fallback
+            } else {
+                displayCurrentCount();
+                currentCountdownValue--;
+            }
+        }
+
+        // --- Initialize the Countdown ---
+        if (countdownElement && birthdayContainer && bodyElement) {
+            if (currentCountdownValue <= 0) {
+                currentCountdownValue = 1;
+                displayCurrentCount();
+                setTimeout(triggerSurprise, 1200);
+            } else {
+                displayCurrentCount();
+                currentCountdownValue--;
+                countdownInterval = setInterval(countdownStep, 1000);
+            }
+        } else {
+            console.error("One or more essential HTML elements are missing!");
+        }
+    </script>
+</body>
+</html>
